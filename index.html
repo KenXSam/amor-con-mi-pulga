@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amor con mi Pulga</title>
+  <style>
+    body {
+      background-color: #1c1c1c;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .card {
+      background: #2b2b2b;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      padding: 2rem;
+      max-width: 500px;
+      text-align: center;
+      margin: 1rem;
+    }
+    button {
+      background: #e91e63;
+      border: none;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 15px;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+    .turno, .puntos, .nivel {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+    select {
+      padding: 0.5rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .mensaje-final {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #e91e63;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      display: none;
+      animation: fadein 2s ease-in;
+    }
+    @keyframes fadein {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Bienvenidos, Pulga y Chuki</h1>
+
+    <select id="nivel">
+      <option value="1">Nivel 1 - Coqueto</option>
+      <option value="2">Nivel 2 - Atrevido</option>
+      <option value="3">Nivel 3 - Sin Filtro</option>
+      <option value="todos">Todos los niveles</option>
+    </select>
+
+    <div id="turno" class="turno">Turno: Chuki</div>
+    <div id="pregunta" class="pregunta">Haz clic para recibir una carta caliente...</div>
+    <button onclick="mostrarCarta()">Nueva Carta</button>
+    <div id="puntos" class="puntos">Puntos - Chuki: 0 | Pulga: 0</div>
+    <button onclick="reiniciarJuego()">Reiniciar</button>
+    <audio id="musica" loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-sexy.mp3" type="audio/mpeg">
+    </audio>
+    <button onclick="toggleMusica()">Música Sexy ON/OFF</button>
+  </div>
+
+  <div id="final" class="mensaje-final">
+    Amo mucho a mi Pulga hermosa. Gracias por cada mirada, juego, risa y noche juntos. Sos mi deseo, mi ternura y mi locura favorita. Siempre tuyo, Chuki.<br>
+    <button onclick="copiarMensaje()">Copiar Mensaje</button>
+    <a id="whatsapp" target="_blank"><button>Enviar por WhatsApp</button></a>
+  </div>
+
+  <script>
+    const cartas = {
+      1: [
+        "Dile un piropo sexy a tu pareja.",
+        "¿Qué parte del cuerpo te excita más de tu pareja?",
+        "Besa a tu pareja en una parte inesperada."
+      ],
+      2: [
+        "Describe una fantasía que quieras cumplir.",
+        "Hazle un masaje lento durante 2 minutos.",
+        "Susúrrale algo sucio al oído."
+      ],
+      3: [
+        "Simula un roleplay por 2 minutos.",
+        "Descríbele lo que quieres hacerle sin filtro.",
+        "Hazle quitarte una prenda sin usar las manos."
+      ]
+    };
+
+    let turno = "Chuki";
+    let puntos = { Chuki: 0, Pulga: 0 };
+    let contador = 0;
+
+    function mostrarCarta() {
+      const nivelSeleccionado = document.getElementById("nivel").value;
+      let opciones = [];
+      if (nivelSeleccionado === "todos") {
+        opciones = [...cartas[1], ...cartas[2], ...cartas[3]];
+      } else {
+        opciones = cartas[nivelSeleccionado];
+      }
+
+      const index = Math.floor(Math.random() * opciones.length);
+      document.getElementById("pregunta").innerText = opciones[index];
+      puntos[turno]++;
+      document.getElementById("puntos").innerText = `Puntos - Chuki: ${puntos.Chuki} | Pulga: ${puntos.Pulga}`;
+      turno = turno === "Chuki" ? "Pulga" : "Chuki";
+      document.getElementById("turno").innerText = `Turno: ${turno}`;
+
+      contador++;
+      if (contador === 10) mostrarFinal();
+    }
+
+    function reiniciarJuego() {
+      puntos = { Chuki: 0, Pulga: 0 };
+      turno = "Chuki";
+      contador = 0;
+      document.getElementById("turno").innerText = `Turno: ${turno}`;
+      document.getElementById("puntos").innerText = `Puntos - Chuki: 0 | Pulga: 0`;
+      document.getElementById("pregunta").innerText = "Haz clic para recibir una carta caliente...";
+      document.getElementById("final").style.display = "none";
+    }
+
+    function toggleMusica() {
+      const musica = document.getElementById("musica");
+      if (musica.paused) {
+        musica.play();
+      } else {
+        musica.pause();
+      }
+    }
+
+    function mostrarFinal() {
+      const final = document.getElementById("final");
+      final.style.display = "block";
+      const mensaje = final.innerText;
+      const link = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+      document.getElementById("whatsapp").href = link;
+    }
+
+    function copiarMensaje() {
+      const mensaje = document.getElementById("final").innerText;
+      navigator.clipboard.writeText(mensaje);
+      alert("Mensaje copiado para enviar a Pulga");
+    }
+  </script>
+</body>
+</html>
